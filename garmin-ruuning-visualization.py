@@ -20,13 +20,20 @@ all_data = []
 
 for pt in points:
     t = pt.find('./Time', root.nsmap)
-    bmp = pt.find('./HeartRateBpm/Value', root.nsmap)
+    
+    bmp1 = pt.find('./HeartRateBpm/Value', root.nsmap)
+    if bmp1 == None :
+        bmp = bmp
+    else:
+      bmp = bmp1  
+   # 以心率为例子，可能得到的部分节点没有心率，取上个心率值补全，其它节点也需要检查
     cad = pt.find('./Extensions/ns3:TPX/ns3:RunCadence', root.nsmap)
     dis = pt.find('./DistanceMeters', root.nsmap)
     spd = pt.find('./Extensions/ns3:TPX/ns3:Speed', root.nsmap)
     
     all_data.append( { 'time' : parser.parse(t.text),
                        'bmp' : int(bmp.text),
+                      # 这里用int 报错，需改为float
                        'cad' : float(cad.text),
                        'dis' : float(dis.text),
                        'spd' : float(spd.text) 
