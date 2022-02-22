@@ -32,8 +32,8 @@ for pt in points:
     spd = pt.find('./Extensions/ns3:TPX/ns3:Speed', root.nsmap)
     
     all_data.append( { 'time' : parser.parse(t.text),
-                       'bmp' : int(bmp.text),
-                      # 这里用int 报错，需改为float
+                       'bmp' : int(float((bmp.text)),
+                      # 这里用int 报错，需改为int(float())
                        'cad' : float(cad.text),
                        'dis' : float(dis.text),
                        'spd' : float(spd.text) 
