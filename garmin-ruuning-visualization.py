@@ -44,11 +44,21 @@ for pt in points:
 # Visualize
 output_file("final.html")
 
+source = ColumnDataSource(data=dict(
+    time=[x['time'] for x in all_data],
+    bmp=[x['bmp'] for x in all_data],
+    # dis=[x['dis'] for x in all_data],
+    # cad=[x['cad'] for x in all_data],
+    # spd=[x['spd'] for x in all_data]
+))
+#  用ColummnDataSource似乎才能搞定TOOLTIPS                      
+                      
+                      
 df = pd.DataFrame(all_data)
 
 hover = HoverTool(
     tooltips=[
-        ( 'time', '@time{%R}'),
+        ( '@time', '@time{%R}'),
         ( 'bmp', '@bmp{000.}'),
         ( 'cad', '@cad'),
         ( 'spd', '@spd')
