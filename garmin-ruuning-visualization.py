@@ -89,11 +89,11 @@ p.yaxis[2].major_label_text_color = "purple"
 
 
 ## plot !
-p.line(“time”, "bmp", source=source, line_color="red", muted_color='red', muted_alpha=0.2)
+p.line(“time”, "bmp", legend_label='cad',source=source, line_color="red", muted_color='red', muted_alpha=0.2)  #新版本需要用legend_label 
 
-p.line(df['time'], df['cad'], legend='cad', line_color="blue", muted_color='blue', muted_alpha=0.2, y_range_name='cad')
+p.line("time", "cad", legend_label='cad', line_color="blue", muted_color='blue', muted_alpha=0.2, y_range_name='cad')
 
-p.line(df['time'], df['spd'], legend='spd', color="purple", muted_color='purple', muted_alpha=0.2, y_range_name='spd')
+p.line("time", "spd", legend_label='spd', color="purple", muted_color='purple', muted_alpha=0.2, y_range_name='spd')
 
 
 # setting for legend
