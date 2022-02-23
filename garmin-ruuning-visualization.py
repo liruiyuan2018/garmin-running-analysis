@@ -89,7 +89,7 @@ p.yaxis[2].major_label_text_color = "purple"
 
 
 ## plot !
-p.line(df['time'], df['bmp'], legend='bmp', line_color="red", muted_color='red', muted_alpha=0.2)
+p.line(“time”, "bmp", source=source, line_color="red", muted_color='red', muted_alpha=0.2)
 
 p.line(df['time'], df['cad'], legend='cad', line_color="blue", muted_color='blue', muted_alpha=0.2, y_range_name='cad')
 
