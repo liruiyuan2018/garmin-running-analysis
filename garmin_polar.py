@@ -7,7 +7,7 @@ from bokeh.models import HoverTool
 from bokeh.models.formatters import DatetimeTickFormatter
 from bokeh.models.ranges import Range1d
 from bokeh.models.axes import LinearAxis
-
+from bokeh.io import export_png
 from time import strftime
 from time import gmtime
 from lxml import etree
@@ -116,5 +116,6 @@ p.ygrid.minor_grid_line_dash = [6, 4]
 # setting for legend
 p.legend.location = "top_right"
 p.legend.click_policy = "mute"
+export_png(p, filename="garmin_polar.png")   #保存成png
 
 show(p)
