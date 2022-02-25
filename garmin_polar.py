@@ -14,8 +14,8 @@ from lxml import etree
 from dateutil import parser
 
 # Get data from .tcx
-tree = etree.parse("garmin.tcx")
-tree_polar = etree.parse("polar.tcx")
+tree = etree.parse("garmin1.tcx")
+tree_polar = etree.parse("polar1.tcx")
 all_data = []
 all_data_polar = []
 
@@ -31,20 +31,23 @@ for pt in points:
         bmp = bmp
     else:
         bmp = bmp1
+    alt = pt.find("./AltitudeMeters",root.nsmap)
+    spd = pt.find('./Extensions/ns3:TPX/ns3:Speed', root.nsmap)
     all_data.append({'time': parser.parse(t.text),
                         'bmp': int(float(bmp.text)),
+                        'alt': float(alt.text),
+                        'spd':float(spd.text),
                         }
 
                         )
 
 for pt in points_polar:
-    t = pt.find('./Time', root_polar.nsmap)
+    t = pt.find('./Time', root.nsmap)
     bmp1 = pt.find('./HeartRateBpm/Value', root_polar.nsmap)
     if bmp1 is None:
         bmp = bmp
     else:
         bmp = bmp1
-
     all_data_polar.append({'time': parser.parse(t.text),
                     'bmp': int(float(bmp.text)),
                             }
@@ -52,11 +55,14 @@ for pt in points_polar:
                             )
 
 # Visualize
-output_file("garmin_polar.html")
+output_file("garmin_polar1.html")
 
 source = ColumnDataSource(data=dict(
     time=[x['time'] for x in all_data],
     bmp=[x['bmp'] for x in all_data],
+    alt=[x['alt'] for x in all_data],
+    spd=[x['spd'] for x in all_data]
+    
 ))
 
 source_polar = ColumnDataSource(data=dict(
@@ -87,17 +93,21 @@ p = figure(x_axis_type="datetime", plot_width=1600, plot_height=800,
 # range for each data field
 p.y_range = Range1d(80, 180)  # bmp
 p.extra_y_ranges = {"HR_POLAR": Range1d(start=80, end=180),   
+                    "alt": Range1d(start=50, end=200), 
+                    "spd": Range1d(start=0, end=10), 
+               
                     }  
 
 # add the extra range to the right of the plot
 p.add_layout(LinearAxis(y_range_name="HR_POLAR"), 'right')
-# p.add_layout(LinearAxis(y_range_name="spd"), 'right')
+p.add_layout(LinearAxis(y_range_name="alt"), 'right')
+p.add_layout(LinearAxis(y_range_name="spd"), 'right')
 
 # set axis text color
 p.yaxis[0].major_label_text_color = "red"
 p.yaxis[1].major_label_text_color = "blue"
-# p.yaxis[2].major_label_text_color = "purple"
-
+p.yaxis[2].major_label_text_color = "purple"
+p.yaxis[3].major_label_text_color = "green"
 
 # plot !
 #  p.line(df['time'], df['bmp'], legend='bmp', line_color="green", muted_color='green', muted_alpha=0.2)
@@ -105,10 +115,14 @@ p.yaxis[1].major_label_text_color = "blue"
 p.line("time", "bmp", source=source, legend_label='garmin心率',
        line_color="red", muted_color='red', muted_alpha=0.2)
 
-# p.line("time", "cad", source=source, legend_label='步频', line_color="blue", muted_color='blue', muted_alpha=0.2, y_range_name="cad")
+p.line("time", "alt", source=source, legend_label='海拔', line_color="purple", muted_color='purple', 
+        muted_alpha=0.2, y_range_name="alt")
 
 p.line("time", "bmp", source=source_polar, legend_label='polar心率', color="blue",
        muted_color='blue', muted_alpha=0.2, y_range_name="HR_POLAR")
+p.line("time", "spd", source=source, legend_label='速度米／秒', color="green",
+       muted_color='green', muted_alpha=0.2, y_range_name="spd")
+
 
 p.ygrid.minor_grid_line_color = 'navy'
 p.ygrid.minor_grid_line_alpha = 0.1
@@ -116,6 +130,6 @@ p.ygrid.minor_grid_line_dash = [6, 4]
 # setting for legend
 p.legend.location = "top_right"
 p.legend.click_policy = "mute"
-export_png(p, filename="garmin_polar.png")   #保存成png
+export_png(p, filename="garmin_polar.png")
 
 show(p)
